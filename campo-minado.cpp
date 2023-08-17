@@ -374,5 +374,4 @@ int main()
     jogando();
     return (0);
 
-
 }
