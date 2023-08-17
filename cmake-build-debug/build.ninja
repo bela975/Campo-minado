@@ -55,12 +55,6 @@ build CMakeFiles/Campo_minado2.dir/campo-minado.cpp.obj: CXX_COMPILER__Campo_min
   OBJECT_DIR = CMakeFiles\Campo_minado2.dir
   OBJECT_FILE_DIR = CMakeFiles\Campo_minado2.dir
 
-build CMakeFiles/Campo_minado2.dir/test.cpp.obj: CXX_COMPILER__Campo_minado2_Debug C$:/Users/Isabela$ Spinelli/CLionProjects/Campo-minado2/test.cpp || cmake_object_order_depends_target_Campo_minado2
-  DEP_FILE = CMakeFiles\Campo_minado2.dir\test.cpp.obj.d
-  FLAGS = -g -fdiagnostics-color=always -std=gnu++14
-  OBJECT_DIR = CMakeFiles\Campo_minado2.dir
-  OBJECT_FILE_DIR = CMakeFiles\Campo_minado2.dir
-
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Campo_minado2
@@ -69,7 +63,7 @@ build CMakeFiles/Campo_minado2.dir/test.cpp.obj: CXX_COMPILER__Campo_minado2_Deb
 #############################################
 # Link the executable Campo_minado2.exe
 
-build Campo_minado2.exe: CXX_EXECUTABLE_LINKER__Campo_minado2_Debug CMakeFiles/Campo_minado2.dir/campo-minado.cpp.obj CMakeFiles/Campo_minado2.dir/test.cpp.obj
+build Campo_minado2.exe: CXX_EXECUTABLE_LINKER__Campo_minado2_Debug CMakeFiles/Campo_minado2.dir/campo-minado.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Campo_minado2.dir
