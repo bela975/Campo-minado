@@ -5,15 +5,12 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#define Iniciante 0
-#define Intermediario 1
-#define Avancado 2
 #define ladoMax 25
-#define maxMinas 99
-#define qtdMovimentos 526 // (25 * 25 - 99)
+const int maxMinas = 1;
+
 
 int lado;
-int minas;
+int MINAS;
 
 //funcao booleana p checar se o quadrado selecionado existe
 bool existe(int linha, int coluna)
@@ -67,7 +64,7 @@ void mostrarMatriz(char matrizAtual[][ladoMax])
 //criando a função responsavel pela lógica chave do jogo,
 //que é contar a quantidade de minas nos quadrados adjacentes
 int contarMinas(int linha, int coluna, int mines[][2],
-                char matrizReal[][ladoMax]
+                char matrizReal[][ladoMax])
 {
     int i;
     int mineCount = 0;
@@ -153,11 +150,11 @@ bool jogoAtivo(char matrizAtual[][ladoMax], char matrizReal[][ladoMax],
         matrizAtual[linha][coluna]='*';
 
 
-        for (i=0; i<minas; i++)
-            matrizAtual[minas[i][0]][mines[i][1]]='*';
+        for (i=0; i<MINAS; i++)
+            matrizAtual[minas[i][0]][minas[i][1]]='*';
 
         //printando a versão da matriz mostrando a bomba
-        printMatriz (matrizAtual);
+        mostrarMatriz(matrizAtual);
         printf ("\nQue pena, explodiu. Fim de jogo.\n");
         return (true);
     }
@@ -166,7 +163,7 @@ bool jogoAtivo(char matrizAtual[][ladoMax], char matrizReal[][ladoMax],
     {
         //caso não haja bomba no quadrado escolhido,
         // mostraremos o numero de bombas adjacentes!
-        int minecount = contarMinas(linha, coluna, minas, matrizReal);
+        int mineCount = contarMinas(linha, coluna, minas, matrizReal);
         (*pRestantes)--;
 
         matrizAtual[linha][coluna] = mineCount +0;
@@ -238,7 +235,7 @@ void plantarMinas(int minas[][2], char matrizReal[][ladoMax])
 
     //criando um loop para que sejam criadas o total de bombas
     //estabelecidas quando o jogador selecionou a dificuldade
-    for (int i=0; i<minas;)
+    for (int i=0; i<MINAS;)
     {
         int aleatorio = rand() % (lado*lado);
         int x = aleatorio / lado;
@@ -248,9 +245,9 @@ void plantarMinas(int minas[][2], char matrizReal[][ladoMax])
         if (plantar[aleatorio] == false)
         {
             //coordenada em analise
-            mines[i][0]= x;
+            minas[i][0]= x;
 
-            mines[i][1] = y;
+            minas[i][1] = y;
 
             //aqui é feita a inserção da mina no espaço disponivel
             matrizReal[minas[i][0]][minas[i][1]] = '*';
@@ -286,10 +283,10 @@ void realoc (int linha, int coluna, char matriz[][ladoMax])
     {
         for (int j=0; j<lado; j++)
         {
-            if (board[i][j] != '*')
+            if (matriz[i][j] != '*')
             {
-                board[i][j] = '*';
-                board[row][col] = '-';
+                matriz[i][j] = '*';
+                matriz[linha][coluna] = '-';
                 return;
             }
         }
@@ -297,13 +294,13 @@ void realoc (int linha, int coluna, char matriz[][ladoMax])
     return;
 }
 //função responsavel pela jogabilidade
-void jogando ()
+void jogando()
 {
     //inicializando:
     bool gameOver = false;
     char matrizReal[ladoMax][ladoMax], matrizAtual[ladoMax][ladoMax];
 
-    int pRestantes = lado * lado - minas, x, y;
+    int pRestantes = lado * lado - MINAS, x, y;
     //guardando as coordenadas de todas as minas
     int minas[maxMinas][2];
 
@@ -317,7 +314,7 @@ void jogando ()
     {
         printf ("Estado atual do tabuleiro : \n");
         mostrarMatriz (matrizAtual);
-        jogada (&x, &y, jogadas, indiceJogada);
+        jogada (&x, &y);
 
         if (indiceJogada == 0)
         {
@@ -330,7 +327,7 @@ void jogando ()
 
         gameOver = jogoAtivo (matrizAtual, matrizReal, minas, x, y, &pRestantes);
 
-        if ((gameOver == false) && (pRrestantes == 0))
+        if ((gameOver == false) && (pRestantes == 0))
         {
             printf ("\nParabéns, você ganhou!\n");
             gameOver = true;
@@ -362,7 +359,7 @@ void customizar (int l, int m)
     } else
     {
         lado = l;
-        minas = m;
+        MINAS = m;
 
     }
 
@@ -372,14 +369,9 @@ void customizar (int l, int m)
 // Driver Program to test above functions
 int main()
 {
-    /* Choose a level between
-    --> BEGINNER = 9 * 9 Cells and 10 Mines
-    --> INTERMEDIATE = 16 * 16 Cells and 40 Mines
-    --> ADVANCED = 24 * 24 Cells and 99 Mines
-    */
-    chooseDifficultyLevel (BEGINNER);
 
-    playMinesweeper ();
+
+    jogando();
     return (0);
 
 
