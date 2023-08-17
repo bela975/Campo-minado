@@ -1,3 +1,6 @@
 # ninja log v5
-0	1011	7139627322867701	CMakeFiles/Campo_minado2.dir/campo-minado.cpp.obj	edcb82fbaea37103
-1014	1141	7139627324159112	Campo_minado2.exe	aaddc38f9a1c9268
+9	1331	7139681150784450	CMakeFiles/Campo_minado2.dir/campo-minado.cpp.obj	edcb82fbaea37103
+2	104	7139681655318526	Campo_minado2.exe	aaddc38f9a1c9268
+3	1361	7139681151079084	CMakeFiles/Campo_minado2.dir/mines.cpp.obj	9ecbdbd5f72d0b20
+1	114	7139682152152539	build.ninja	2a087a72864e9617
+3	1219	7139682215051007	CMakeFiles/Campo_minado2.dir/test.cpp.obj	6e5b54db65d3f279

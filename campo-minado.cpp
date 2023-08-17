@@ -5,19 +5,19 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#define ladoMax 25
-const int maxMinas = 1;
+const int ladoMax = 0;
+const int maxMinas = 0;
 
 
-int lado;
+int LADO;
 int MINAS;
 
 //funcao booleana p checar se o quadrado selecionado existe
 bool existe(int linha, int coluna)
 {
     //retorna se ele está dentro da nossa matriz, a malha do jogo
-    return (linha >= 0) && (linha < lado) &&
-            (coluna >= 0) && (coluna < lado);
+    return (linha >= 0) && (linha < LADO) &&
+            (coluna >= 0) && (coluna < LADO);
 
 
 }
@@ -45,16 +45,16 @@ void mostrarMatriz(char matrizAtual[][ladoMax])
 
     printf ("    ");
 
-    for (i=0; i<lado; i++)
+    for (i=0; i<LADO; i++)
         printf ("%d ", i);
 
     printf ("\n\n");
 
-    for (i=0; i<lado; i++)
+    for (i=0; i<LADO; i++)
     {
         printf ("%d   ", i);
 
-        for (j=0; j<lado; j++)
+        for (j=0; j<LADO; j++)
             printf ("%c ", matrizAtual[i][j]);
         printf ("\n");
     }
@@ -237,9 +237,9 @@ void plantarMinas(int minas[][2], char matrizReal[][ladoMax])
     //estabelecidas quando o jogador selecionou a dificuldade
     for (int i=0; i<MINAS;)
     {
-        int aleatorio = rand() % (lado*lado);
-        int x = aleatorio / lado;
-        int y = aleatorio % lado;
+        int aleatorio = rand() % (LADO*LADO);
+        int x = aleatorio / LADO;
+        int y = aleatorio % LADO;
 
         //adicionando minas caso o espaço esteja sem nenhuma
         if (plantar[aleatorio] == false)
@@ -264,9 +264,9 @@ void iniciar(char matrizReal[][ladoMax], char matrizAtual[][ladoMax])
     srand(time(NULL));
 
     //inicializando os quadrados zerados
-    for (int i=0; i<lado; i++)
+    for (int i=0; i<LADO; i++)
     {
-        for (int j=0; j<lado; j++)
+        for (int j=0; j<LADO; j++)
         {
             matrizAtual[i][j] = matrizReal[i][j] = '-';
         }
@@ -279,9 +279,9 @@ void iniciar(char matrizReal[][ladoMax], char matrizAtual[][ladoMax])
 void realoc (int linha, int coluna, char matriz[][ladoMax])
 {
     //varrendo a matriz
-    for (int i=0; i<lado; i++)
+    for (int i=0; i<LADO; i++)
     {
-        for (int j=0; j<lado; j++)
+        for (int j=0; j<LADO; j++)
         {
             if (matriz[i][j] != '*')
             {
@@ -297,15 +297,18 @@ void realoc (int linha, int coluna, char matriz[][ladoMax])
 void jogando()
 {
     //inicializando:
+
     bool gameOver = false;
     char matrizReal[ladoMax][ladoMax], matrizAtual[ladoMax][ladoMax];
 
-    int pRestantes = lado * lado - MINAS, x, y;
+    int pRestantes = LADO * LADO - MINAS, x, y;
     //guardando as coordenadas de todas as minas
     int minas[maxMinas][2];
 
+
     iniciar(matrizReal, matrizAtual);
 
+    criarMatriz();
     plantarMinas(minas,matrizReal);
 
     int indiceJogada = 0;
@@ -313,7 +316,7 @@ void jogando()
     while(gameOver == false)
     {
         printf ("Estado atual do tabuleiro : \n");
-        mostrarMatriz (matrizAtual);
+        mostrarMatriz(matrizAtual);
         jogada (&x, &y);
 
         if (indiceJogada == 0)
@@ -325,52 +328,51 @@ void jogando()
 
         indiceJogada ++;
 
-        gameOver = jogoAtivo (matrizAtual, matrizReal, minas, x, y, &pRestantes);
-
+        gameOver = jogoAtivo(matrizAtual, matrizReal, minas, x, y, &pRestantes);
         if ((gameOver == false) && (pRestantes == 0))
         {
             printf ("\nParabéns, você ganhou!\n");
             gameOver = true;
         }
     }
-
     return;
 }
 //função que permite que o jogador selecione
-// o tamanho do tabuleiro e a qtd de bombas:
-void customizar (int l, int m)
+//as dimensoes e qtd de minas:
+void customizar ()
 {
-    printf ("selecione as dimensões do seu tabuleiro, l: \n");
+    int l;
+    int m;
+    printf ("selecione as dimensoes do seu tabuleiro, l: \n");
     scanf ("%d", &l);
     printf ("selecione a quantidade de minas desejada, m: \n");
     scanf ("%d", &m);
 
-    int maxMinas = (l*l)*(15/100);
+    int maxMinas = (l*l) - (l*l/5);
+
+    LADO = l;
+    MINAS = m;
 
     if (m > maxMinas)
     {
         while(m > maxMinas)
         {
-            printf("Você inseriu uma quantia muito alta. \n");
-            printf("O máximo adequado de bombas para esse tabuleiro é %d.", maxMinas);
+            printf("Voce inseriu uma quantia muito alta. \n");
+            printf("O maximo adequado de bombas para esse tabuleiro = %d.", maxMinas);
             printf("selecione uma nova quantia de minas desejada, m: \n");
             scanf("%d", &m);
         }
-    } else
-    {
-        lado = l;
-        MINAS = m;
-
     }
 
+    jogando();
     return;
-}
 
+}
 // Driver Program to test above functions
 int main()
 {
 
-
+    customizar();
     jogando();
     return (0);
 
