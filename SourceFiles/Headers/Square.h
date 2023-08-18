@@ -5,9 +5,9 @@
 
 class Square
 {
-    bool flagged;
+    bool isFlagged;
     bool hasMine;
-    bool open;
+    bool isOpen;
 
     unsigned char effectTimer;
     unsigned char adjacentMines;
