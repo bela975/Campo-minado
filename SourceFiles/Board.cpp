@@ -139,63 +139,61 @@ void Board::show(sf::RenderWindow& i_windows)
                 }
             }
 
-//Reset the cell's mouse state
-            get_cell(a, b, cells)->set_mouse_state(0);
+//Restart the mouse state in each square
+            getSquare(a, b, squares)->setMouseState(0);
 
-            //This is where we draw the effect
-            //Get ready to see messy, horrible, unoptimized code
-            //I warned you
+
             //We don't draw the effect if the game is not over or the cell effect timer hasn't yet started.
-            if (0 != game_over && EFFECT_DURATION > get_cell(a, b, cells)->get_effect_timer())
+            if (0 != gameOver && effectDuration > getSquare(a, b, squares)->getEffectTimer())
             {
-                //We calculate the size of the effect
-                unsigned char effect_size = static_cast<unsigned char>(2 * round(0.5f * CELL_SIZE * ((EFFECT_DURATION - get_cell(a, b, cells)->get_effect_timer()) / static_cast<float>(EFFECT_DURATION))));
+                //calculating the size of the effect
+                unsigned char effectSize = static_cast<unsigned char>(2 * round(0.5f * pixelBySquare * ((effectDuration - getSquare(a, b, squares)->getEffectTimer()) / static_cast<float>(effectDuration))));
 
-                //The effect timer of each cell will have a random duration
-                std::uniform_int_distribution<unsigned short> effect_duration_distribution(1, EFFECT_DURATION - 1);
+                //setting a random duration for the effect timer on each square
+                std::uniform_int_distribution<unsigned short> effectDurationDistribution(1, effectDuration - 1);
 
-                //We're gonna use the cell shape to draw effects, because I love recycling!
-                cell_shape.setPosition(floor(CELL_SIZE * (0.5f + a) - 0.5f * effect_size), floor(CELL_SIZE * (0.5f + b) - 0.5f * effect_size));
-                cell_shape.setSize(sf::Vector2f(effect_size, effect_size));
+                //drawing effects based on the shape of the cells of the board
+                squareShape.setPosition(floor(pixelBySquare * (0.5f + a) - 0.5f * effectSize), floor(pixelBySquare * (0.5f + b) - 0.5f * effectSize));
+                squareShape.setSize(sf::Vector2f(effectSize, effectSize));
 
-                //The color of the effect will depend on whether the game is lost or won
-                if (-1 == game_over)
+                //establishing what color goes on what effect based on the game status
+                if (-1 == gameOver)
                 {
-                    cell_shape.setFillColor(sf::Color(255, 36, 0));
+                    cellShape.setFillColor(sf::Color(255, 36, 0));
                 }
                 else
                 {
-                    cell_shape.setFillColor(sf::Color(255, 255, 255));
+                    cellShape.setFillColor(sf::Color(255, 255, 255));
                 }
 
-                //We draw the effect
-                i_window.draw(cell_shape);
+                //making a window for the effect to show up
+                i_window.show(cellShape);
 
                 //We reset the cell shape's size
-                cell_shape.setSize(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
+                squareShape.setSize(sf::Vector2f(pixelBySquare - 1, pixelBySquare - 1));
 
                 //If the effect timer is over
-                if (1 == get_cell(a, b, cells)->update_effect_timer())
+                if (1 == geTSquare(a, b, squares)->updateEffectTimer())
                 {
-                    //We start each neighboring cell's effect timer
-                    if (0 <= a - 1 && EFFECT_DURATION == get_cell(a - 1, b, cells)->get_effect_timer())
+                    //starting the effect timer for the adjacent Squares
+                    if (0 <= a - 1 && effectDuration == getSquare(a - 1, b, square)->getEffectTimer())
                     {
-                        get_cell(a - 1, b, cells)->set_effect_timer(static_cast<unsigned char>(effect_duration_distribution(random_engine)));
+                        getSquare(a - 1, b, squares)->setEffectTimer(static_cast<unsigned char>(effectDurationDistribution(randomEngine)));
                     }
 
-                    if (0 <= b - 1 && EFFECT_DURATION == get_cell(a, b - 1, cells)->get_effect_timer())
+                    if (0 <= b - 1 && effectDuration == getSquare(a, b - 1, squares)->getEffectTimer())
                     {
-                        get_cell(a, b - 1, cells)->set_effect_timer(static_cast<unsigned char>(effect_duration_distribution(random_engine)));
+                        getSquares(a, b - 1, squares)->setEffectTimer(static_cast<unsigned char>(effectDurationDistribution(randomEngine)));
                     }
 
-                    if (COLUMNS > 1 + a && EFFECT_DURATION == get_cell(1 + a, b, cells)->get_effect_timer())
+                    if (col > 1 + a && effectDuration == getSquares(1 + a, b, squares)->getEffectTimer())
                     {
-                        get_cell(1 + a, b, cells)->set_effect_timer(static_cast<unsigned char>(effect_duration_distribution(random_engine)));
+                        getSquares(1 + a, b, squares)->setEffectTimer(static_cast<unsigned char>(effectDurationDistribution(randomEngine)));
                     }
 
-                    if (ROWS > 1 + b && EFFECT_DURATION == get_cell(a, 1 + b, cells)->get_effect_timer())
+                    if (line > 1 + b && effectDuration == getSquares(a, 1 + b, squares)->getEffectTimer())
                     {
-                        get_cell(a, 1 + b, cells)->set_effect_timer(static_cast<unsigned char>(effect_duration_distribution(random_engine)));
+                        getSquare(a, 1 + b, squares)-->setEffectTimer(static_cast<unsigned char>(effectDurationDistribution(randomEngine)));
                     }
                 }
             }
@@ -203,103 +201,110 @@ void Board::show(sf::RenderWindow& i_windows)
     }
 }
 
-void Field::flag_cell(unsigned char i_x, unsigned char i_y)
+void Board::flag(unsigned char i_x, unsigned char i_y)
 {
-    //We don't let the player to flag cells when the game is over
-    if (0 == game_over)
+    //making players unable to flag mines after the game is over
+
+    if (0 == gameOver)
     {
-        get_cell(i_x, i_y, cells)->flag();
+        getSquare(i_x, i_y, cells)->flag();
     }
 }
-
-void Field::open_cell(unsigned char i_x, unsigned char i_y)
+//board being created
+void Board::openSquare(unsigned char i_x, unsigned char i_y)
 {
-    //If this is the first cell we're opening
-    if (0 == first_click)
+    //if we open our first Square
+    if (0 == firstClick)
     {
         //We declare coordinate distributions
-        std::uniform_int_distribution<unsigned short> x_distribution(0, COLUMNS - 1);
-        std::uniform_int_distribution<unsigned short> y_distribution(0, ROWS - 1);
+        std::uniform_int_distribution<unsigned short> x_distribution(0, col - 1);
+        std::uniform_int_distribution<unsigned short> y_distribution(0, line - 1);
 
-        first_click = 1;
+        firstClick = 1;
 
         //Then we generate mines
         for (unsigned short a = 0; a < MINES; a++)
         {
-            unsigned char mine_x = static_cast<unsigned char>(x_distribution(random_engine));
-            unsigned char mine_y = static_cast<unsigned char>(y_distribution(random_engine));
+            unsigned char mine_x = static_cast<unsigned char>(x_distribution(randomEngine));
+            unsigned char mine_y = static_cast<unsigned char>(y_distribution(randomEngine));
 
-            //If the chosed cell already has a mine in it or it's a cell that the player wants to open
-            if (1 == get_cell(mine_x, mine_y, cells)->get_is_mine() || (i_x == mine_x && i_y == mine_y))
+            //checking if the Square the player tried to open is or not mined
+            //and if it isn't, we set a mine somewhere else
+            if (1 == getSquare(mine_x, mine_y, squares)->getHasMine() || (i_x == mine_x && i_y == mine_y))
             {
                 //We try again
                 a--;
             }
             else
             {
-                //Otherwise, we set the mine
-                get_cell(mine_x, mine_y, cells)->set_mine();
+
+                getSquare(mine_x, mine_y, squares)->setMine();
             }
         }
 
-        //After we generate mines, each cell counts how many mines are surrounding it
-        for (Cell& cell : cells)
+        //making each square calculate how many mines surround it, then
+        //show the corresponding number
+        for (Square& square : squares)
         {
-            cell.count_mines_around(cells);
+            short square.countAdjacentMines(squares);
         }
     }
 
-    //We don't open the cell when the game is over or when the cell is flagged
-    if (0 == game_over && 0 == get_cell(i_x, i_y, cells)->get_is_flagged())
+    //setting cases where cells can't be opened
+    if (0 == gameOver && 0 == getSquares(i_x, i_y, squares)->getFlagged())
     {
-        if (1 == get_cell(i_x, i_y, cells)->open(cells))
+        if (1 == getSquare(i_x, i_y, squares)->open(squares))
         {
-            //When the player opens a cell with a mine, we set the game over to -1
-            game_over = -1;
+            //setting game status to -1, game over in case player opens a mine
+            gameOver = -1;
         }
         else
         {
-            unsigned short total_closed_cells = 0;
+            //seeing how many more squares are closed so that we can detect
+            //when the player wins
+            unsigned short totalClosedSquares = 0;
 
-            //We count how many cells are closed
-            for (Cell& cell : cells)
+
+            for (Square& square : square)
             {
-                total_closed_cells += 1 - cell.get_is_open();
+                totalClosedSquares += 1 - square.getOpen();
             }
 
-            //If the number of closed cells equals the total number of mines, we'll consider that the game is won
-            if (MINES == total_closed_cells)
+            //establishing condition for victory
+            if (MINES == totalClosedCells)
             {
-                //We set the game over to 1
-                game_over = 1;
+                //change the game over status to one, which means a win
+                gameOver = 1;
 
-                //Then we start the effect
-                get_cell(i_x, i_y, cells)->set_effect_timer(EFFECT_DURATION - 1);
+                //setting winning effect
+                getSquares(i_x, i_y, squares)->setEffectTimer(effectDuration - 1);
             }
         }
     }
 }
 
-void Field::restart()
+//Establishing conditions and enabling for the game to be played again
+void Board::restart()
 {
-    //We only restart the game when it's over
-    if (0 != game_over)
+    //If gameOver status != 0,
+    //meaning, game is no longer active
+    if (0 != gameOver)
     {
-        first_click = 0;
+        firstClick = 0;
 
-        game_over = 0;
+        gameOver = 0;
 
-        for (Cell& cell : cells)
+        for (Square& square : squares)
         {
-            cell.reset();
+            square.reset();
         }
     }
 }
 
 //Since we can't call the cell's function directly, we must use this function
-void Field::set_mouse_state(unsigned char i_mouse_state, unsigned char i_x, unsigned char i_y)
+void Squares::detectMouseState(unsigned char i_mouse_state, unsigned char i_x, unsigned char i_y)
 {
-    get_cell(i_x, i_y, cells)->set_mouse_state(i_mouse_state);
+    getSquare(i_x, i_y, squares)->detectMouseState(i_mouse_state);
 }
 
 
