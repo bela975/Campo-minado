@@ -171,7 +171,7 @@ void Square::setMine()
     hasMine = 1;
 }
 
-void Square::setMopuseState(unsigned char i_mouseState)
+void Square::setMouseState(unsigned char i_mouseState)
 {
     mouseState = i_mouseState;
 }

@@ -3,7 +3,7 @@
 //
 #pragma once
 
-//i used constexpr because all constants have pre-established
+//I used constexpr because all constants have pre-established
 //values while still in compilation-time,
 //therefore they don't rely on changes during run-time.
 constexpr unsigned char PixelBySquare = 16;

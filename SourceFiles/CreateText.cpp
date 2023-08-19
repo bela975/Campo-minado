@@ -6,7 +6,8 @@
 
 #include "Headers/CreateText.hpp"
 
-void createText(bool i_black, unsigned short i_x, unsigned short i_y, const std::string& i_text, sf::RenderWindow& i_window)
+void createText(bool i_b, unsigned short i_x, unsigned short i_y,
+                const std::string& i_text, sf::RenderWindow& i_window)
 {
 
     short character_x = i_x;
@@ -28,7 +29,7 @@ void createText(bool i_black, unsigned short i_x, unsigned short i_y, const std:
     //We can use this to change the color of the text
     if (1 == i_black)
     {
-        character_sprite.setColor(sf::Color(23, 135, 15));
+        characterSprite.setColor(sf::Color(0, 0, 0));
     }
 
     for (const char a : i_text)
@@ -46,12 +47,12 @@ void createText(bool i_black, unsigned short i_x, unsigned short i_y, const std:
         //Change the position of the next character
         characterSprite.setPosition(character_x, character_y);
         //Pick the character from the font image
-        characterSprite.setTextureRect(sf::IntRect(characterWidth * (a - 32), 0, characterWidth, fontTexture.getSize().y));
+        characterSprite.setTextureRect(sf::IntRect(character_width * (a - 32), 0, characterWidth, fontTexture.getSize().y));
 
         //Increase the x-coordinate
         character_x += characterWidth;
 
         //Draw the character
-        i_window.create(characterSprite);
+        i_window.show(characterSprite);
     }
 }
